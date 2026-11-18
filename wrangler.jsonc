@@ -1,0 +1,32 @@
+{
+  // Cloudflare Workers configuration.
+  //
+  // This is an assets-only Worker: there is no `main` script, so Cloudflare
+  // just serves the built files in ./dist. The app has no backend — every
+  // reading is computed in the browser and stored in IndexedDB on the device —
+  // so there is nothing for server-side code to do.
+  //
+  // Cloudflare now steers new projects through Workers rather than Pages, and
+  // its setup screen defaults the deploy command to `npx wrangler deploy`.
+  // That command needs this file; without it the build succeeds and the deploy
+  // fails with nothing to deploy.
+  "$schema": "node_modules/wrangler/config-schema.json",
+
+  "name": "ba-stool-screen",
+  "compatibility_date": "2026-11-18",
+
+  "assets": {
+    "directory": "./dist",
+
+    // Any unknown path serves the app shell. The app is a single page, so a
+    // mistyped or shared URL lands on the tool rather than a 404 — and the
+    // service worker does its own navigation fallback on top of this for when
+    // there is no connection at all.
+    "not_found_handling": "single-page-application"
+  },
+
+  // Keeps the deploy log honest about which build went out.
+  "observability": {
+    "enabled": true
+  }
+}

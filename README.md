@@ -244,34 +244,48 @@ into a slightly steadier reference than either alone.
 
 ## Deployment
 
-The app is deployed to its own subdomain — **`https://bastoolscreen.<your-domain>`** —
-so it owns the whole origin: served at `/`, no base path, and a service worker
+Deployed to its own subdomain — **`https://bastoolscreen.<your-domain>`** — so
+it owns the whole origin: served at `/`, no base path, and a service worker
 whose scope is the entire site.
 
-**1. Cloudflare Pages**
+Cloudflare now routes new projects through **Workers** rather than Pages, and
+`wrangler.jsonc` is what makes that work. It declares an assets-only Worker:
+no `main` script, just the built files in `dist`. There is no backend to run —
+every reading is computed in the browser and stored on the device.
 
-| Setting                | Value           |
-| ---------------------- | --------------- |
-| Build command          | `npm run build` |
-| Build output directory | `dist`          |
+**1. Push the repo to GitHub**, then in the Cloudflare dashboard: Workers &
+Pages → Create → connect the repo. Grant access to **this repository only**;
+the integration asks for write access to code and deployments, and there is no
+reason to extend that to every repo on the account.
 
-**2. Custom domain.** In the Pages project, Custom domains → add
-`bastoolscreen.<your-domain>`. With the domain already on Cloudflare the CNAME
-is created automatically and the certificate is issued within a few minutes.
+**2. Build settings** — the defaults are already right:
+
+| Field          | Value                |
+| -------------- | -------------------- |
+| Build command  | `npm run build`      |
+| Deploy command | `npx wrangler deploy` |
+
+Node version comes from `.nvmrc` (22), so the build does not depend on
+whatever default the platform happens to ship.
+
+**3. Custom domain.** In the Worker → Settings → Domains & Routes, add
+`bastoolscreen.<your-domain>`. With the domain already on Cloudflare the DNS
+record and certificate are handled automatically.
 
 HTTPS is required, not optional: without it neither the camera nor the service
-worker will start. Cloudflare provides it.
+worker will start.
 
-**3. Check it.** With the site live:
+**4. Check it:**
 
 ```bash
+npx wrangler deploy --dry-run                              # config is valid
 node scripts/verify-deploy.mjs https://bastoolscreen.<your-domain> /
 ```
 
-This is worth running after the first deploy and after any change to `BASE`.
-A wrong base path is invisible online — the app loads and looks fine — and
-total offline, because the worker's scope and precache URLs no longer match
-what the browser asks for. The assertions are what separate those two.
+Worth running after the first deploy and after any change to `BASE`. A wrong
+base path is invisible online — the app loads and looks fine — and total
+offline, because the worker's scope and precache URLs no longer match what the
+browser asks for. The assertions are what separate those two.
 
 ### Serving from a sub-path instead
 
