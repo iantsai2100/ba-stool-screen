@@ -1,0 +1,42 @@
+<!--
+  App icon source. The PNGs in this folder are rendered from this file by
+  `npm run icons`; edit here, not the PNGs.
+
+  Deliberately abstract: three colour bars running pale → amber → brown, which
+  is what the tool compares, on the app's teal. It reads as a colour-reference
+  card rather than anything literal, stays legible at 48px, and does not carry
+  a medical-device mark — this is a 衛教 tool, not a regulated diagnostic.
+
+  Geometry is drawn on a 512 grid. The maskable variant uses the same artwork
+  scaled into the centre 80% safe zone; see scripts/make-icons.mjs.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0" stop-color="#2D7D9A" />
+      <stop offset="0.55" stop-color="#1F6A85" />
+      <stop offset="1" stop-color="#174F66" />
+    </linearGradient>
+    <linearGradient id="pale" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#F2EDE2" />
+      <stop offset="1" stop-color="#E4DAC4" />
+    </linearGradient>
+    <linearGradient id="mid" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#D8C068" />
+      <stop offset="1" stop-color="#C2A63C" />
+    </linearGradient>
+    <linearGradient id="dark" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#9A7430" width="1" />
+      <stop offset="1" stop-color="#6B4A1C" />
+    </linearGradient>
+  </defs>
+
+  <rect width="512" height="512" fill="url(#bg)" />
+
+  <!-- Three bars, inset from the edges so the shape survives rounding. -->
+  <g>
+    <rect x="104" y="128" width="304" height="68" rx="34" fill="url(#pale)" />
+    <rect x="104" y="222" width="304" height="68" rx="34" fill="url(#mid)" />
+    <rect x="104" y="316" width="304" height="68" rx="34" fill="url(#dark)" />
+  </g>
+</svg>
